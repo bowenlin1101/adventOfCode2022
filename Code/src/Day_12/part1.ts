@@ -14,29 +14,36 @@ function createMap(){
         }
     }
 }
+
 createMap()
 console.log(map)
-map[map.findIndex((object) => object.elevation == "E")].value = 0;
+
 function mapValues(depth:number){
-    var points = []
-    for (var i = 0; i < map.length; i++){
-        if (map[i].value == depth){
-            points.push(map[i])
-        }
-    }
-    if (map.findIndex((object) => object.elevation == "S" && object.value != undefined) != -1){
+    var SHasValue = map.findIndex((object) => object.elevation == "S" && object.value != undefined) != -1
+    if ( SHasValue){
         return depth
     }
-    for (var i = 0; i < points.length; i++){
-        var up = map.findIndex((object) => object.row == points[i].row - 1 && object.col == points[i].col) != -1? map[map.findIndex((object) => object.row == points[i].row - 1 && object.col == points[i].col)] : undefined
-        var down = map.findIndex((object) => object.row == points[i].row + 1 && object.col == points[i].col) != -1? map[map.findIndex((object) => object.row == points[i].row + 1 && object.col == points[i].col)] : undefined
-        var left = map.findIndex((object) => object.row == points[i].row && object.col == points[i].col - 1) != -1? map[map.findIndex((object) => object.row == points[i].row && object.col == points[i].col - 1)] : undefined
-        var right = map.findIndex((object) => object.row == points[i].row && object.col == points[i].col + 1) != -1? map[map.findIndex((object) => object.row == points[i].row && object.col == points[i].col + 1)] : undefined
-        var directions = [up,down,left,right]
-        for (var j = 0; j < directions.length; j++){
-            if (directions[j]){
-                if (directions[j].value == undefined && (elevationMap.indexOf(points[i].elevation) - elevationMap.indexOf(directions[j].elevation) == 1||elevationMap.indexOf(points[i].elevation) == elevationMap.indexOf(directions[j].elevation) || elevationMap.indexOf(points[i].elevation) < elevationMap.indexOf(directions[j].elevation))){
-                    directions[j].value = depth+1
+
+    var pointsAtDepth = []
+    for (var i = 0; i < map.length; i++){
+        if (map[i].value == depth){
+            pointsAtDepth.push(map[i])
+        }
+    }
+
+    for (var i = 0; i < pointsAtDepth.length; i++){
+        var pointAbove = map.findIndex((object) => object.row == pointsAtDepth[i].row - 1 && object.col == pointsAtDepth[i].col) != -1? map[map.findIndex((object) => object.row == pointsAtDepth[i].row - 1 && object.col == pointsAtDepth[i].col)] : undefined
+        var pointBelow = map.findIndex((object) => object.row == pointsAtDepth[i].row + 1 && object.col == pointsAtDepth[i].col) != -1? map[map.findIndex((object) => object.row == pointsAtDepth[i].row + 1 && object.col == pointsAtDepth[i].col)] : undefined
+        var pointLeft = map.findIndex((object) => object.row == pointsAtDepth[i].row && object.col == pointsAtDepth[i].col - 1) != -1? map[map.findIndex((object) => object.row == pointsAtDepth[i].row && object.col == pointsAtDepth[i].col - 1)] : undefined
+        var pointRight = map.findIndex((object) => object.row == pointsAtDepth[i].row && object.col == pointsAtDepth[i].col + 1) != -1? map[map.findIndex((object) => object.row == pointsAtDepth[i].row && object.col == pointsAtDepth[i].col + 1)] : undefined
+        var pointsAround = [pointAbove,pointBelow,pointLeft,pointRight]
+        for (var j = 0; j < pointsAround.length; j++){
+            var pointAround = pointsAround[j]
+            if (pointAround){
+                var pointDepthElevationIndex = elevationMap.indexOf(pointsAtDepth[i].elevation)
+                var pointAroundElevationIndex = elevationMap.indexOf(pointAround.elevation)
+                if (pointAround.value == undefined && (pointDepthElevationIndex - pointAroundElevationIndex == 1|| pointDepthElevationIndex == pointAroundElevationIndex || pointDepthElevationIndex < pointAroundElevationIndex)){
+                    pointAround.value = depth + 1
                 }
             }
         }
@@ -44,4 +51,6 @@ function mapValues(depth:number){
     return mapValues(depth+1)
 }
 
+var endpoint = map[map.findIndex((object) => object.elevation == "E")]
+endpoint.value = 0;
 console.log(mapValues(0))
