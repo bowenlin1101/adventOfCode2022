@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "noImplicitAny": false,
+      "removeComments": true,
+      "preserveConstEnums": true,
+      "sourceMap": true,
+      "forceConsistentCasingInFileNames": true,
+      "outDir": "dist",
+      "declaration": true,
+      "allowJs": false,
+      "types": [
+        "node"
+      ],
+      "esModuleInterop": true
+    },
+    "include": [
+      "src/**/*.ts",
+      "./src/**/*.ts",
+      "./index.d.ts",
+      "./*.txt"
+    ],
+    "exclude": [
+      "src/**/*.spec.ts",
+      "node_modules"
+    ]
+  }
